@@ -1,0 +1,61 @@
+steps:
+  # Install npm dependencies
+  - name: 'gcr.io/cloud-builders/npm'
+    args: ['install']
+    dir: '.' # Run npm install in the root directory where package.json is
+
+  # Deploy createInstance Cloud Function
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'functions'
+      - 'deploy'
+      - 'createInstance'
+      - '--runtime=nodejs18'
+      - '--trigger-http'
+      - '--source=./functions' # Relative to the root of the repository
+      - '--entry-point=createInstance'
+      - '--allow-unauthenticated'
+      - '--region=YOUR_PREFERRED_REGION' # User needs to replace this
+      - '--set-env-vars=GCLOUD_PROJECT=$PROJECT_ID,DEFAULT_ZONE=us-central1-a' # PROJECT_ID is a build substitution
+    dir: '.' # Ensure command is run from the root where ./functions exists
+
+  # Deploy getInstanceStatus Cloud Function
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'functions'
+      - 'deploy'
+      - 'getInstanceStatus'
+      - '--runtime=nodejs18'
+      - '--trigger-http'
+      - '--source=./functions'
+      - '--entry-point=getInstanceStatus'
+      - '--allow-unauthenticated'
+      - '--region=YOUR_PREFERRED_REGION' # User needs to replace this
+      - '--set-env-vars=GCLOUD_PROJECT=$PROJECT_ID,DEFAULT_ZONE=us-central1-a'
+    dir: '.'
+
+  # Deploy executeOllamaCommand Cloud Function
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'functions'
+      - 'deploy'
+      - 'executeOllamaCommand'
+      - '--runtime=nodejs18'
+      - '--trigger-http'
+      - '--source=./functions'
+      - '--entry-point=executeOllamaCommand'
+      - '--allow-unauthenticated'
+      - '--region=YOUR_PREFERRED_REGION' # User needs to replace this
+      - '--set-env-vars=GCLOUD_PROJECT=$PROJECT_ID,DEFAULT_ZONE=us-central1-a'
+    dir: '.'
+
+  # Optional: Deploy static frontend to Cloud Storage
+  - name: 'gcr.io/cloud-builders/gsutil'
+    args: ['-m', 'rsync', '-r', 'public', 'gs://YOUR_BUCKET_NAME_FOR_FRONTEND/'] # User needs to replace this
+    dir: '.' # Ensure command is run from the root where ./public exists
+
+# Available substitutions: $PROJECT_ID, $BUILD_ID, $COMMIT_SHA, etc.
+# GCLOUD_PROJECT and DEFAULT_ZONE are passed as env vars to the functions.
+# PROJECT_ID is automatically available as a substitution in Cloud Build.
+# No sensitive data is hardcoded here.
+# User needs to replace YOUR_PREFERRED_REGION and YOUR_BUCKET_NAME_FOR_FRONTEND.
