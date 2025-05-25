@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ollama GCE Manager</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; }
+        .container { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .section { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #eee; }
+        .section:last-child { border-bottom: none; }
+        h2 { color: #333; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"], textarea {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea { height: 100px; }
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover { background-color: #0056b3; }
+        pre {
+            background-color: #eee;
+            padding: 10px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ollama GCE Manager</h1>
+
+        <div class="section">
+            <h2>VM Creation</h2>
+            <label for="modelNameInput">Ollama Model Name:</label>
+            <input type="text" id="modelNameInput" value="llama2">
+            <label for="zoneInput">GCE Zone:</label>
+            <input type="text" id="zoneInput" placeholder="us-central1-a">
+            <button id="createVmButton">Create VM</button>
+        </div>
+
+        <div class="section">
+            <h2>VM Status</h2>
+            <label for="instanceNameStatusInput">Instance Name:</label>
+            <input type="text" id="instanceNameStatusInput" placeholder="e.g., ollama-vm-12345">
+            <label for="zoneStatusInput">Zone (for status):</label>
+            <input type="text" id="zoneStatusInput" placeholder="us-central1-a">
+            <button id="getStatusButton">Get VM Status</button>
+            <h3>VM Status Output:</h3>
+            <pre id="vmStatusDisplay">VM status will appear here...</pre>
+        </div>
+
+        <div class="section">
+            <h2>Execute Ollama Command</h2>
+            <label for="instanceIpInput">Instance IP:</label>
+            <input type="text" id="instanceIpInput" placeholder="e.g., 34.x.x.x">
+            <label for="ollamaCommandInput">Ollama Command Endpoint (e.g., /api/generate, /api/pull):</label>
+            <input type="text" id="ollamaCommandInput" value="/api/generate">
+            <label for="commandPayloadInput">Command Payload (JSON):</label>
+            <textarea id="commandPayloadInput">{"model": "llama2", "prompt": "Why is the sky blue?", "stream": false}</textarea>
+            <button id="sendCommandButton">Send Command</button>
+            <h3>Ollama Response:</h3>
+            <pre id="ollamaResponseDisplay">Ollama response will appear here...</pre>
+        </div>
+
+        <div class="section">
+            <h2>Frontend Logs</h2>
+            <pre id="logsDisplay">Frontend logs will appear here...</pre>
+        </div>
+    </div>
+
+    <script src="app.js" defer></script>
+</body>
+</html>
